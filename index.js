@@ -175,7 +175,7 @@ app.put('/users/:id',(req,res) =>{
 
    if(user){
     user.name=updatedUser.name;
-    res.status(200).json(user);
+    res.status(200).send(`user ${id} has been updated`);
    }else{
     res.status(400).send('no such user')
    }
@@ -216,7 +216,7 @@ app.delete('/users/:id/:movietitle',(req,res) =>{
     let user = users.find(user => user.id == id);
 
    if(user){
-    user.favoriteMovies.filter(title => title!== movietitle);
+    user.favoriteMovies.filter(title => title !== movietitle);
     res.status(200).send(`${movietitle}has been removed from user ${id}'s array`);;
    }else{
     res.status(400).send('no such user')
@@ -235,6 +235,7 @@ app.get('/movies', (req, res) => {
     res.status(200).json(topMovies);
 });
 
+
 //Get route for users
 app.get('/users', (req, res) => {
     res.status(200).json(users);
@@ -251,6 +252,8 @@ if (topMovies) {
     res.status(400).send('no such movie')
 }
 })
+
+//Get route for movie genre
 
 
 //Get route for movie genre
