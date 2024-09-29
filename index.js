@@ -1,8 +1,22 @@
-console.log('My first Node test server is running on Port 8080.');
-const express = require('express');
-const app = express();
-const morgan = require ('morgan');
-const path = require("path");
+const express = require('express'),
+    app = express(),
+    morgan = require ('morgan'),
+    bodyParser = require('body-parser'),
+    uuid = require('uuid');
+    const path = require("path");    
+app.use (bodyParser.json());
+
+let users = [
+
+{   id: 1,
+    name:"Kathy",
+    favoriteMovies:[]
+},
+ {   id: 2,
+    name:"Todd",
+    favoriteMovies:[]
+},
+]
 
 // Movie Data
 
@@ -139,6 +153,76 @@ let topMovies = [
     },
 ];
 
+//Add Users
+app.post('/users',(req,res) =>{
+    const newUser = req.body;
+
+    if (newUser.name){
+        newUser.id = uuid.v4();
+        users.push(newUser);
+        res.status(201).json(newUser)
+    } else{
+        res.status(400).send('users need names')
+    }   
+    })
+
+//update Users
+app.put('/users/:id',(req,res) =>{
+    const { id } = req.params;
+    const updatedUser = req.body;
+    
+   let user = users.find(user => user.id == id);
+
+   if(user){
+    user.name=updatedUser.name;
+    res.status(200).json(user);
+   }else{
+    res.status(400).send('no such user')
+   }
+    })
+
+//delete User ID
+app.delete('/users/:id',(req,res) => {
+    const { id, } = req.params;
+
+    let user = users.find(user => user.id == id);
+
+   if(user){
+    users = users.filter(user => user.id != id)
+    res.status(200).send(`user ${id} has been deleted`);
+   }else{
+    res.status(400).send('no such user')
+   }
+    })
+
+//add Favorite Movie
+app.post('/users/:id/:movietitle',(req,res) => {
+    const { id, movietitle } = req.params;
+    console.log(`Received request to add movie "${movietitle}" for user with ID: ${id}`);
+
+    let user = users.find(user => user.id == id);
+
+   if(user){
+    user.favoriteMovies.push(movietitle);
+    res.status(200).send(`${movietitle}has been added to user ${id}'s array`);;
+   }else{
+    res.status(400).send('no such user')
+   }
+})
+//delete Favorite Movie
+app.delete('/users/:id/:movietitle',(req,res) =>{
+    const { id, movietitle } = req.params;
+
+    let user = users.find(user => user.id == id);
+
+   if(user){
+    user.favoriteMovies.filter(title => title!== movietitle);
+    res.status(200).send(`${movietitle}has been removed from user ${id}'s array`);;
+   }else{
+    res.status(400).send('no such user')
+   }
+    })
+
 //Log to terminal with morgan
 
 app.use (morgan('combined'));
@@ -148,9 +232,53 @@ app.use(express.static('public'));
 
 //Get route for movies and returns top 10 movies
 app.get('/movies', (req, res) => {
-    res.json(topMovies);
+    res.status(200).json(topMovies);
 });
 
+//Get route for users
+app.get('/users', (req, res) => {
+    res.status(200).json(users);
+});
+
+//Get route for movie titles
+app.get('/movies/:title',(req, res) => {
+const {title} =req.params;
+const movies = topMovies.find(movies => movies.title === title);
+
+if (topMovies) {
+    res.status(200).json(movies);
+}else{
+    res.status(400).send('no such movie')
+}
+})
+
+
+//Get route for movie genre
+app.get('/movies/genre/:genreName',(req, res) => {
+    const {genreName} =req.params;
+    const genre = topMovies.find(topMovies => topMovies.genre.name === genreName).genre;
+    
+    if (genre) {
+        res.status(200).json(genre);
+    }else{
+        res.status(400).send('no such genre')
+    }   
+    })
+
+//Get route for movie Director
+app.get('/movies/director/:directorName',(req, res) => {
+    const {directorName} =req.params;
+    const director = topMovies.find(topMovies => topMovies.director.name === directorName).director;
+    
+    if (director) {
+        res.status(200).json(director);
+    }else{
+        res.status(400).send('no such director')
+    }   
+    })
+
+
+        
 //log to txt file
 app.get('/log', (req, res) => {
     res.send('This is a log.');
@@ -163,10 +291,10 @@ app.get('/', (req, res) => {
 });
 
 // Error-handling middleware
-app.use((err, req, res, next) => {
-	console.error('Error:', err.stack);
-	res.status(500).send('Something broke!');
-});
+// app.use((err, req, res, next) => {
+// 	console.error('Error:', err.stack);
+// 	res.status(500).send('Check Code No response received.');
+// });
 
 // Start the server
 app.listen(8080, () => {
