@@ -14,21 +14,128 @@
     <li>package.json</li>
 </ul>
 
-<p>My project has the following endpoints.</p>
-<ul>
-    <li><a href="app.get">List of users</a></li>
-    <li><a href="app.post">Add User</a></li>
-    <li><a href="app.put">Update User </a></li>
-    <li><a href="app.delete">Delete User </a></li>
-    <li><a href="app.post">Add favorite movies to user list</a></li>
-    <li><a href="app.delete">Delete favorite movies from the user list</a></li>
-    <li><a href="app.get">List of Movies</a></li>
-    <li><a href="app.get">Single Movie and Poster</a></li>
-    <li><a href="app.get">Return Moive Genre</a></li>
-    <li><a href="app.get">Return Moive Director</a></li>
-    <li><a href="app.get">Return Moive Poster</a></li>
-   
-</ul>
+<h2>My project has the following endpoints.</h2>
+
+<table width="100%" border="10">
+    <th>Business Logic</th>
+    <th>URL</th>
+    <th>HTTP Method</th>
+    <th>Request dody data format</th>
+    <th>Response body data format</th>
+    <tr>
+        <td>Get list of Users</td>
+        <td>/users</td>
+        <td>Get</td>
+        <td>None</td>
+        <td>A JASON objectholding all the users</td>
+    </tr>
+
+    <tr>
+        <td>Add User</td>
+        <td>/users</td>
+        <td>Post</td>
+        <td>A JASON objectholding data abouta movie stuctued like:<p></p>
+           {<br>
+            name:"Kathy",<br>
+            favoriteMovies:[]<br>
+           }<br>
+        </td>
+        <td>A JASON objectholding data about the user that wasadded including id<p></p>
+            {<br>
+             id: 1,<br>
+             name:"Kathy",<br>
+             favoriteMovies:[]<br>
+            }</td>
+    </tr>
+    <tr>
+        <td>Update User</td>
+        <td>/users/id</td>
+        <td>Put</td>
+        <td>none</td>
+        <td>text that user was uopdated</td>
+    </tr>
+    <tr>
+        <td>Delete User</td>
+        <td>/users/id</td>
+        <td>delete</td>
+        <td>none</td>
+        <td>text that user id was deleted</td>
+    </tr>
+    <tr>
+        <td>Add favorite movies to user list</td>
+        <td>/users/id/movietitle</td>
+        <td>Post</td>
+        <td>None</td>
+        <td>Text that user array was updated</td>
+    </tr>
+    <tr>
+        <td>Delete favorite movies to user list</td>
+        <td>/users/id/movietitle</td>
+        <td>Post</td>
+        <td>None</td>
+        <td>Text that movie was deleted from user array</td>
+    </tr>
+    <tr>
+        <td>List of Movies</td>
+        <td>/movies</td>
+        <td>Get</td>
+        <td>A JASON objectholding data abouta movie stuctued like:<p></p>
+            {<br>
+                title: 'Dune: Part Two',<br>
+                description: '2024 American epic science fiction film directed and co-produced by Denis Villeneuve, who co-wrote the screenplay with Jon Spaihts.',<br>
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/52/Dune_Part_Two_poster.jpeg/220px-Dune_Part_Two_poster.jpeg',<br>
+                director: {
+                    name: 'Denis Villeneuve',<br>
+                    description:'Denis Villeneuve OC CQ RCA (French: [dəni vilnœv]; born October 3, 1967) is a Canadian filmmaker. He has received seven Canadian Screen Awards as well as nominations for three Academy Awards, five BAFTA Awards, and two Golden Globe Awards.',<br>
+                },<br>
+            </td>
+        <td>A JASON object holding all the data about the movies</td>
+    </tr>
+    <tr>
+        <td>Return Moive Title </td>
+        <td>/movies/:title</td>
+        <td>Get</td>
+        <td>A JASON Object holding all data about the movie title structured like:<p></p>
+            {<br>
+                "title": "Atlas",<br>
+                "description": " 2024 American science fiction action film starring Jennifer Lopez as a highly skilled counterterrorism analyst, who harbors a profound skepticism towards artificial intelligence, and who comes to realize that it may be her sole recourse following the failure of a mission aimed at apprehending a rogue robot.",<br>
+                "imageUrl": "https://upload.wikimedia.org/wikipedia/en/thumb/f/f4/Atlas_2024_film_poster.png/220px-Atlas_2024_film_poster.png",<br>
+                "director": {<br>
+                    "name": "Brad Peyton",<br>
+                    "description": "Brad Peyton (born May 27, 1978) is a Canadian filmmaker, best known for directing the Dwayne Johnson star vehicles Journey 2: The Mysterious Island (2012), San Andreas (2015), and Rampage (2018) as well as the Netflix series Daybreak (2019)."<br>
+                },<br>
+                "genre": {<br>
+                    "name": "scifi",<br>
+                    "description": "a film genre that uses fictional science to depict phenomena that are not generally accepted by mainstream science."<br>
+                }<br>
+            }<br></td>
+        <td>A JASON object holding data aboiut the movie title.</td>
+    </tr>
+    <tr>
+        <td>Return Moive Genre</td>
+        <td>/movies/genre/genreName</td>
+        <td>Get</td>
+        <td>A JASON Object holding data about genre stuctured like:<p></p>
+            {<br>
+                "name": "scifi",<br>
+                "description": "a film genre that uses fictional science to depict phenomena that are not generally accepted by mainstream science."<br>
+            }<br></td>
+        <td>A JASON Object holding data about the genre</td>
+    </tr>
+    <tr>
+        <td>Return Moive Director</td>
+        <td>/movies/director/:directorName</td>
+        <td>get</td>
+        <td>A JASON object holding data about the director stuctured like:<p></p>
+            {<br>
+                "name": "Brad Peyton",<br>
+                "description": "Brad Peyton (born May 27, 1978) is a Canadian filmmaker, best known for directing the Dwayne Johnson star vehicles Journey 2: The Mysterious Island (2012), San Andreas (2015), and Rampage (2018) as well as the Netflix series Daybreak (2019)."<br>
+            }<br></td>
+        <td>A JASON object holkding data about Director</td>
+    </tr>
+
+</table>
+
 </body>
 
 </html>
