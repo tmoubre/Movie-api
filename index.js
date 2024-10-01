@@ -204,7 +204,7 @@ app.post('/users/:id/:movietitle',(req,res) => {
 
    if(user){
     user.favoriteMovies.push(movietitle);
-    res.status(200).send(`${movietitle}has been added to user ${id}'s array`);;
+    res.status(200).send(`${movietitle} has been added to user ${id}'s array`);;
    }else{
     res.status(400).send('no such user')
    }
@@ -217,7 +217,7 @@ app.delete('/users/:id/:movietitle',(req,res) =>{
 
    if(user){
     user.favoriteMovies.filter(title => title !== movietitle);
-    res.status(200).send(`${movietitle}has been removed from user ${id}'s array`);;
+    res.status(200).send(`${movietitle} has been removed from user ${id}'s array`);;
    }else{
     res.status(400).send('no such user')
    }
