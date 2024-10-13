@@ -1,14 +1,4 @@
 const mongoose = require('mongoose');
-// const { default: nodemon } = require('nodemon');
-// const express = require('express'),
-//     app = express(),
-//     morgan = require ('morgan'),
-//     bodyParser = require('body-parser'),
-//     uuid = require('uuid');
-//     const path = require("path");    
-// app.use (bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
-
 
 let movieSchema = mongoose.Schema({
     title: {type: String, required: true},

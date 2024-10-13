@@ -1,34 +1,34 @@
 const express = require("express"),
-bodyParser = require("body-parser"),
+    bodyParser = require("body-parser"),
     uuid = require('uuid');
-const morgan = require ('morgan'),
+const morgan = require('morgan');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
 const Movies = Models.Movie;
-const Users = Models.User;
-mongoose.connect('mongodb://127.0.0.1:27017/movies', { useNewUrlParser: true, useUnifiedTopology: true });
-    app = express(),
-    
+const Users = Models.Users;
+mongoose.connect('mongodb://127.0.0.1:27017/topMovies', { useNewUrlParser: true, useUnifiedTopology: true });
+app = express();
+
     
 const path = require("path");    
 app.use (bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //Add Users
-app.post('/users', async (req, res) => {
-    await users.findOne({ userId: req.body.userId })
-        .then((users) => {
-            if (users) {
+app.post('/topMovies/users', async (req, res) => {
+    await Users.findOne({ userId: req.body.userId })
+        .then((user) => {
+            if (user) {
                 return res.status(400).send(req.body.userId + 'User already exsits');
             } else {
-                users
+                Users
                     .create({
                         userId: req.body.userId,
                         password: req.body.password,
                         email: req.body.email,
                         birthDate: req.body.birthDate
                     })
-                    .then((users) => { res.status(201).jason(users) })
+                    .then((user) => { res.status(201).json(user) })
                     .catch((error) => {
                         console.error(error);
                         res.status(500).send('error:' + error);
@@ -184,17 +184,17 @@ app.listen(8080, () => {
 
 
 
-let users = [
+// let users = [
 
-{   id: 1,
-    name:"Kathy",
-    favoriteMovies:[]
-},
- {   id: 2,
-    name:"Todd",
-    favoriteMovies:[]
-},
-]
+// {   id: 1,
+//     name:"Kathy",
+//     favoriteMovies:[]
+// },
+//  {   id: 2,
+//     name:"Todd",
+//     favoriteMovies:[]
+// },
+// ]
 
 // Movie Data
 
