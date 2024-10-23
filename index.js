@@ -1,6 +1,6 @@
 const express = require("express"),
-    bodyParser = require("body-parser"),
-    uuid = require('uuid');
+  bodyParser = require("body-parser"),
+  uuid = require('uuid');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
@@ -10,7 +10,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/topMovies', { useNewUrlParser: true,
 app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-    
+
 const path = require("path");    
 
 //Add Users
@@ -65,7 +65,7 @@ app.put('/users/:userId', async (req, res) => {
 app.delete('/users/:userId', async (req, res) => {
     await Users.findOneAndRemove({ userId: req.params.userId })
       .then((user) => {
-        if (!user) {
+        if (user) {
           res.status(400).send(req.params.Username + ' was not found');
         } else {
           res.status(200).send(req.params.Username + ' was deleted.');
@@ -78,34 +78,31 @@ app.delete('/users/:userId', async (req, res) => {
   });
 
 // Add a movie to a user's list of favorites
-app.post('/users/:userId/movies/:Title', async (req, res) => {
-    await Users.findOneAndUpdate({ userId: req.params.userId }, {
-       $push: { favoriteMovies: req.params._id }
-     },
-     { new: true }) // This line makes sure that the updated document is returned
+app.post('/users/:userId/:favoriteMovies', async (req, res) => {
+  await Users.findOneAndUpdate(
+    { userId: req.params.userId },
+    { $push: { favoriteMovies: req.params.favoriteMovies } },
+    { new: true }) // This line makes sure that the updated document is returned
     .then((updatedUser) => {
-      res.json(updatedUser);
-    })
+      res.json(updatedUser);})
     .catch((err) => {
       console.error(err);
       res.status(500).send('Error: ' + err);
     });
-  });
+});
 
 
 //delete Favorite Movie
-app.delete('/users/:id/:movietitle',(req,res) =>{
-    const { id, movietitle } = req.params;
-
-    let user = users.find(user => user.id == id);
-
-   if(user){
-    user.favoriteMovies.filter(title => title !== movietitle);
-    res.status(200).send(`${movietitle} has been removed from user ${id}'s array`);;
-   }else{
-    res.status(400).send('no such user')
-   }
-    })
+app.delete('/users/:userId/:favoriteMovies', async (req, res) => {
+  await Users.findOneAndUpdate(
+    { userId: req.params.userId },
+    { $pull: { favoriteMovies: req.params.FavoriteMovies } },
+    { new: true })
+    .then((updatedUser) => res.status(200).json(updatedUser))
+    .catch((err) =>
+      res.status(500).send('Error:' + err)
+    );
+});
 
 //Log to terminal with morgan
 
@@ -151,14 +148,14 @@ app.get('/users/:userId', async (req, res) => {
   });
 
 //Get route for movie titles
-app.get('/movies/:title',(req, res) => {
-    Movies.findOne({title: req.params.title})
-    .then((movie)=>{
-        res.json(movie);
+app.get('/movies/:title', (req, res) => {
+  Movies.findOne({ title: req.params.title })
+    .then((movie) => {
+      res.json(movie);
     })
-    .catch((err)=>{
-        console.error(err);
-        res.status(500).send("Error:"+ err);
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error:" + err);
     });
 });
 
@@ -167,9 +164,9 @@ app.get('/movies/:title',(req, res) => {
 
 //Get route for movie genre
 app.get('/genre/:name', (req, res) => {
-    Genres.findOne({ name: req.params.name })
+    Movies.findOne({ 'genre.name': req.params.name })
         .then((genre) => {
-            res.json(genre.description);
+            res.json(genre.genre.description);
         })
         .catch((err) => {
             console.error(err);
@@ -179,9 +176,9 @@ app.get('/genre/:name', (req, res) => {
 
 //Get route for movie Director
 app.get('/director/:name',(req, res) => {
-    Directors.findOne({ name: req.params.name })
+    Movies.findOne({ 'director.name': req.params.name })
         .then((director) => {
-            res.json(director);
+            res.json(director.director);
         })
         .catch((err) => {
             console.error(err);
