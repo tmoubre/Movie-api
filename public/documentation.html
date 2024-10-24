@@ -16,71 +16,83 @@
 
 <h2>My project has the following endpoints.</h2>
 
-<table width="100%" border="10">
+<table width="100%" border="5">
     <th>Business Logic</th>
     <th>URL</th>
-    <th>HTTP Method</th>
-    <th>Request dody data format</th>
+    <th>HTTP: Method</th>
+    <th>Request body data format</th>
     <th>Response body data format</th>
     <tr>
         <td>Get list of Users</td>
         <td>/users</td>
-        <td>Get</td>
+        <td>GET</td>
         <td>None</td>
-        <td>A JASON objectholding all the users</td>
+        <td>A JSON object holding all the users</td>
     </tr>
-
+    <tr>
+        <td>Get a user by username</td>
+        <td>/users/:userId</td>
+        <td>GET</td>
+        <td>None</td>
+        <td>A JSON object holding all the users</td>
+    </tr>
     <tr>
         <td>Add User</td>
         <td>/users</td>
-        <td>Post</td>
-        <td>A JASON objectholding data abouta movie stuctued like:<p></p>
-           {<br>
-            name:"Kathy",<br>
-            favoriteMovies:[]<br>
-           }<br>
-        </td>
-        <td>A JASON objectholding data about the user that wasadded including id<p></p>
+        <td>POST</td>
+        <td>A JSON object holding data about a movie structured like:<p></p>
             {<br>
-             id: 1,<br>
-             name:"Kathy",<br>
-             favoriteMovies:[]<br>
-            }</td>
+            userId:"Kathy",<br>
+            password:"123456"<br>
+            email:"kathy.oubre@outlook.com"<br>
+            birthDate:"1944-05-21"<br>
+            favoriteMovies:[]<br>
+            }<br>
+        </td>
+        <td>A JSON object holding data about the user that was added including _id<p></p>
+            {<br>
+            userId:"Kathy",<br>
+            password:"123456"<br>
+            email:"kathy.oubre@outlook.com"<br>
+            birthDate:"1944-05-21"<br>
+            favoriteMovies:[]<br>
+            }<br>
+        </td>
     </tr>
     <tr>
         <td>Update User</td>
-        <td>/users/id</td>
-        <td>Put</td>
+        <td>/users/:userId</td>
+        <td>PUT</td>
         <td>none</td>
-        <td>text that user was uopdated</td>
+        <td>text that user was updated</td>
     </tr>
     <tr>
         <td>Delete User</td>
-        <td>/users/id</td>
-        <td>delete</td>
+        <td>/users/:userId</td>
+        <td>DELETE</td>
         <td>none</td>
-        <td>text that user id was deleted</td>
+        <td>text that user was deleted</td>
     </tr>
     <tr>
         <td>Add favorite movies to user list</td>
-        <td>/users/id/movietitle</td>
-        <td>Post</td>
+        <td>/users/:userId/favoriteMovies/:id</td>
+        <td>POST</td>
         <td>None</td>
         <td>Text that user array was updated</td>
     </tr>
     <tr>
         <td>Delete favorite movies to user list</td>
-        <td>/users/id/movietitle</td>
-        <td>Post</td>
+        <td>/users/:userId/favoriteMovies/:id</td>
+        <td>DELETE</td>
         <td>None</td>
         <td>Text that movie was deleted from user array</td>
     </tr>
     <tr>
         <td>List of Movies</td>
         <td>/movies</td>
-        <td>Get</td>
-        <td>A JASON objectholding data abouta movie stuctued like:<p></p>
-            {<br>
+        <td>GET</td>
+        <td>A JSON object holding data about movie structured like:<p></p>
+            <br>
                 title: 'Dune: Part Two',<br>
                 description: '2024 American epic science fiction film directed and co-produced by Denis Villeneuve, who co-wrote the screenplay with Jon Spaihts.',<br>
                 imageUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/52/Dune_Part_Two_poster.jpeg/220px-Dune_Part_Two_poster.jpeg',<br>
@@ -89,13 +101,13 @@
                     description:'Denis Villeneuve OC CQ RCA (French: [dəni vilnœv]; born October 3, 1967) is a Canadian filmmaker. He has received seven Canadian Screen Awards as well as nominations for three Academy Awards, five BAFTA Awards, and two Golden Globe Awards.',<br>
                 },<br>
             </td>
-        <td>A JASON object holding all the data about the movies</td>
+        <td>A JSON object holding all the data about the movies</td>
     </tr>
     <tr>
-        <td>Return Moive Title </td>
+        <td>Return Movie Title </td>
         <td>/movies/:title</td>
-        <td>Get</td>
-        <td>A JASON Object holding all data about the movie title structured like:<p></p>
+        <td>GET</td>
+        <td>A JSON Object holding all data about the movie title structured like:<p></p>
             {<br>
                 "title": "Atlas",<br>
                 "description": " 2024 American science fiction action film starring Jennifer Lopez as a highly skilled counterterrorism analyst, who harbors a profound skepticism towards artificial intelligence, and who comes to realize that it may be her sole recourse following the failure of a mission aimed at apprehending a rogue robot.",<br>
@@ -109,29 +121,30 @@
                     "description": "a film genre that uses fictional science to depict phenomena that are not generally accepted by mainstream science."<br>
                 }<br>
             }<br></td>
-        <td>A JASON object holding data aboiut the movie title.</td>
+        <td>A JSON object holding data about the movie title.</td>
     </tr>
     <tr>
-        <td>Return Moive Genre</td>
-        <td>/movies/genre/genreName</td>
-        <td>Get</td>
-        <td>A JASON Object holding data about genre stuctured like:<p></p>
+        <td>Return Movie Genre</td>
+        <td>/genre/:name</td>
+        <td>GET</td>
+        <td>A JSON Object holding data about genre structured like:<p></p>
             {<br>
                 "name": "scifi",<br>
                 "description": "a film genre that uses fictional science to depict phenomena that are not generally accepted by mainstream science."<br>
             }<br></td>
-        <td>A JASON Object holding data about the genre</td>
+        <td>A JSON Object holding data about the genre</td>
     </tr>
     <tr>
         <td>Return Moive Director</td>
-        <td>/movies/director/:directorName</td>
-        <td>get</td>
-        <td>A JASON object holding data about the director stuctured like:<p></p>
+        <td>/director/:name</td>
+        <td>GET</td>
+        <td>A JSON object holding data about the director stuctured like:<p></p>
             {<br>
                 "name": "Brad Peyton",<br>
                 "description": "Brad Peyton (born May 27, 1978) is a Canadian filmmaker, best known for directing the Dwayne Johnson star vehicles Journey 2: The Mysterious Island (2012), San Andreas (2015), and Rampage (2018) as well as the Netflix series Daybreak (2019)."<br>
             }<br></td>
-        <td>A JASON object holkding data about Director</td>
+        <td>A JSON object holding data about Director</td>
+
     </tr>
 
 </table>
