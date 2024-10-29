@@ -10,6 +10,10 @@ mongoose.connect('mongodb://127.0.0.1:27017/topMovies', { useNewUrlParser: true,
 app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+let auth = require('./auth.js')(app);
+const passport = require('passport');
+require('./passport');
+
 
 const path = require("path");
 
@@ -60,6 +64,30 @@ app.put('/users/:userId', async (req, res) => {
       res.status(500).send('Error: ' + err);
     })
 
+});
+
+// Get all users
+app.get('/users', async (req, res) => {
+  await Users.find()
+    .then((users) => {
+      res.status(201).json(users);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+// Get a user by username
+app.get('/users/:userId', async (req, res) => {
+  await Users.findOne({ userId: req.params.userId })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 // Delete a user by username
@@ -114,38 +142,14 @@ app.use(morgan('combined'));
 app.use(express.static('public'));
 
 //Get route for movies and returns top 10 movies
-app.get('/movies', (req, res) => {
-  Movies.find()
+app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  await Movies.find()
     .then((movies) => {
       res.status(201).json(movies);
     })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send("Error:" + err);
-    });
-});
-
-// Get all users
-app.get('/users', async (req, res) => {
-  await Users.find()
-    .then((users) => {
-      res.status(201).json(users);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    });
-});
-
-// Get a user by username
-app.get('/users/:userId', async (req, res) => {
-  await Users.findOne({ userId: req.params.userId })
-    .then((user) => {
-      res.json(user);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send("Error:" + error);
     });
 });
 
@@ -188,8 +192,6 @@ app.get('/director/:name', (req, res) => {
     });
 });
 
-
-
 //log to txt file
 app.get('/log', (req, res) => {
   res.send('This is a log.');
@@ -202,10 +204,10 @@ app.get('/', (req, res) => {
 });
 
 // Error-handling middleware
-// app.use((err, req, res, next) => {
-// 	console.error('Error:', err.stack);
-// 	res.status(500).send('Check Code No response received.');
-// });
+app.use((err, req, res, next) => {
+  console.error('Error:', err.stack);
+  res.status(500).send('Check Code No response received.');
+});
 
 // Start the server
 app.listen(8080, () => {
