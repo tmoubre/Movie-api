@@ -28,12 +28,13 @@ passport.use(
                 .catch((error) => {
                     console.log(error);
                     return callback(error);
-                })
+                }
+            )
         }
     )
 );
 passport.use(new JWTStrategy({
-    JWTFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
     secretOrKey: 'your_jwt_secret'
 }, async (jwtPayload, callback) => {
     return await Users.findById(jwtPayload._id)
@@ -43,5 +44,4 @@ passport.use(new JWTStrategy({
         .catch((error) => {
             return callback(error)
         });
-}
-));
+}));
