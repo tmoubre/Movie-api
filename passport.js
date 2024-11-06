@@ -1,35 +1,41 @@
 const passport = require('passport'),
-    localStrategy = require('passport-local').Strategy,
-    models = require('./models.js'),
+    LocalStrategy = require('passport-local').Strategy,
+    Models = require('./models.js'),
     passportJWT = require('passport-jwt');
 
-let Users = models.Users,
+let Users = Models.User,
     JWTStrategy = passportJWT.Strategy,
     ExtractJWT = passportJWT.ExtractJwt;
 
 passport.use(
-    new localStrategy({
-        usernameField: 'UserId',
-        passwordField: 'Password',
+    new LocalStrategy({
+        usernameField: 'userId',
+        passwordField: 'password',
     },
         async (userId, password, callback) => {
             console.log(`${userId}${password}`);
-            await Users.findone({ userId: userId })
-                .then((Users) => {
-                    if (!Users) {
+            await Users.findOne({ userId: userId })
+                .then((User) => {
+                    if (!User) {
                         console.log('incorrect username');
                         return callback(null, false, {
                             message: 'incorrect uername or password combination',
                         });
                     }
+                    if (!User.validatePassword(password)) {
+                        console.log('incorrect password');
+                        return callback(null, false, {
+                            message: 'incorrect password.',
+                        });
+                    }
                     console.log('finished');
-                    return callback(null, Users);
+                    return callback(null, User);
                 })
                 .catch((error) => {
                     console.log(error);
                     return callback(error);
                 }
-            )
+                )
         }
     )
 );

@@ -5,11 +5,12 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
 const Movies = Models.Movie;
-const Users = Models.Users;
+const Users = Models.User;
 mongoose.connect('mongodb://127.0.0.1:27017/topMovies', { useNewUrlParser: true, useUnifiedTopology: true });
 app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 let auth = require('./auth.js')(app);
 const passport = require('passport');
 require('./passport');
@@ -45,7 +46,10 @@ app.post('/users', async (req, res) => {
 });
 
 // Update User
-app.put('/users/:userId', async (req, res) => {
+app.put('/users/:userId',passport.authenticate('jwt',{session:false}), async (req, res) => {
+    if(req.Users.userId !==req.params.userId){
+      return res.status(400).send('Permission denied');
+    }
   await Users.findOneAndUpdate({ userId: req.params.userId }, {
     $set:
     {
