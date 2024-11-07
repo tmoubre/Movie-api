@@ -22,12 +22,6 @@ passport.use(
                             message: 'incorrect uername or password combination',
                         });
                     }
-                    if (!user.validatePassword(password)) {
-                        console.log('incorrect password');
-                        return callback(null, false, {
-                            message: 'incorrect password.',
-                        });
-                    }
                     console.log('finished');
                     return callback(null, user);
                 })
@@ -35,8 +29,7 @@ passport.use(
                     console.log(error);
                     return callback(error);
                 }
-                )
-        }
+            )}
     )
 );
 passport.use(new JWTStrategy({
