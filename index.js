@@ -2,54 +2,66 @@ const express = require("express"),
   bodyParser = require("body-parser"),
   uuid = require('uuid');
 const morgan = require('morgan');
+const { check, validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
+const cors = require('cors');
 mongoose.connect('mongodb://127.0.0.1:27017/topMovies', { useNewUrlParser: true, useUnifiedTopology: true });
 app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(cors());
 let auth = require('./auth.js')(app);
 const passport = require('passport');
 require('./passport');
-
-
 const path = require("path");
 
 //Add Users
-app.post('/users', async (req, res) => {
-  await Users.findOne({ userId: req.body.userId })
-    .then((user) => {
-      if (user) {
-        return res.status(400).send(req.body.userId + 'User already exsits');
-      } else {
-        Users
-          .create({
-            userId: req.body.userId,
-            password: req.body.password,
-            email: req.body.email,
-            birthDate: req.body.birthDate
-          })
-          .then((user) => { res.status(201).json(user) })
-          .catch((error) => {
-            console.error(error);
-            res.status(500).send('error:' + error);
-          })
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send('error' + error);
-    });
-});
+app.post('/users', 
+[
+  check('userId', 'User Id is required').isLength({ min: 5 }),
+  check('userId', 'User Id contains non alpha numeric characters-not allowed') .isAlphanumeric(),
+  check('password', 'Password is required').not().isEmpty(),
+  check('Email', 'Email does not apper to be valid').isEmail()
+], async (req, res) => {
+  //check the validation object for errors
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    let hashedPassword = Users.hashedPassword(req.body.Password);
+    await Users.findOne({ userId: req.body.userId })
+      .then((user) => {
+        if (user) {
+          return res.status(400).send(req.body.userId + 'User already exsits');
+        } else {
+          Users
+            .create({
+              userId: req.body.userId,
+              password: req.body.password,
+              email: req.body.email,
+              birthDate: req.body.birthDate
+            })
+            .then((user) => { res.status(201).json(user) })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).send('error:' + error);
+            })
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send('error' + error);
+      });
+  });
 
 // Update User
-app.put('/users/:userId',passport.authenticate('jwt',{session:false}), async (req, res) => {
-    if(req.Users.userId !==req.params.userId){
-      return res.status(400).send('Permission denied');
-    }
+app.put('/users/:userId', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  if (req.Users.userId !== req.params.userId) {
+    return res.status(400).send('Permission denied');
+  }
   await Users.findOneAndUpdate({ userId: req.params.userId }, {
     $set:
     {
@@ -214,6 +226,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server
-app.listen(8080, () => {
-  console.log('Your app is listening on port 8080.');
+const port=process.env.PORT || 8080;
+app.listen(port, '0.0.0.0',() => {
+  console.log('Listening on Port' + port);
 });
