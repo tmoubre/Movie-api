@@ -8,7 +8,7 @@ const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
 const cors = require('cors');
-mongoose.Connect ('mongodb+srv://oubre1:Batman@cluster0.efoid.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'),{ useNewUrlParser: true, useUnifiedTopology: true };
+mongoose.connect ('mongodb+srv://oubre1:Batman@cluster0.efoid.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'),{ useNewUrlParser: true, useUnifiedTopology: true };
 app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
