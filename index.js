@@ -24,7 +24,7 @@ app.post('/users',
   check('userId', 'User Id is required').isLength({ min: 5 }),
   check('userId', 'User Id contains non alpha numeric characters-not allowed') .isAlphanumeric(),
   check('password', 'Password is required').not().isEmpty(),
-  check('Email', 'Email does not apper to be valid').isEmail()
+  check('email', 'Email does not apper to be valid').isEmail()
 ], async (req, res) => {
   //check the validation object for errors
     let errors = validationResult(req);
