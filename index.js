@@ -8,7 +8,7 @@ const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
 const cors = require('cors');
-mongoose.connect (process.env.CONNECTION_URI,{ useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -21,29 +21,29 @@ let allowedOrigins = [];
 
 app.use(cors({
   origin: (origin, callback) => {
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) { // If a specific origin isn’t found on the list of allowed origins
       let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
-      return callback(new Error(message ), false);
+      return callback(new Error(message), false);
     }
     return callback(null, true);
   }
 }));
 
 //Add Users
-app.post('/users', 
+app.post('/users',
   // Validation logic here for request
   //you can either use a chain of methods like .not().isEmpty()
   //which means "opposite of isEmpty" in plain english "is not empty"
   //or use .isLength({min: 5}) which means
   //minimum value of 5 characters are only allowed
-[
-  check('userId', 'User Id is required').isLength({ min: 5 }),
-  check('userId', 'User Id contains non alpha numeric characters-not allowed') .isAlphanumeric(),
-  check('password', 'Password is required').not().isEmpty(),
-  check('email', 'Email does not apper to be valid').isEmail()
-], async (req, res) => {
-  //check the validation object for errors
+  [
+    check('userId', 'User Id is required').isLength({ min: 5 }),
+    check('userId', 'User Id contains non alpha numeric characters-not allowed').isAlphanumeric(),
+    check('password', 'Password is required').not().isEmpty(),
+    check('email', 'Email does not apper to be valid').isEmail()
+  ], async (req, res) => {
+    //check the validation object for errors
     let errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
@@ -231,9 +231,7 @@ app.get('/log', (req, res) => {
 });
 // GET route for "/" that returns a default textual response
 app.get('/', (req, res) => {
-  res.send(
-    'Welcome to my API! Please Go to /documentation.html to view the documentation.'
-  );
+  res.send('Welcome to my API! Please Go to /documentation.html to view the documentation.');
 });
 
 // Error-handling middleware
@@ -243,7 +241,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server
-const port=process.env.PORT || 8080;
-app.listen(port, '0.0.0.0',() => {
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0', () => {
   console.log('Listening on Port' + port);
 });
