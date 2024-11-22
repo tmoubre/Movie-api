@@ -229,12 +229,12 @@ app.get('/director/:name', (req, res) => {
 app.get('/log', (req, res) => {
   res.send('This is a log.');
 });
-
 // GET route for "/" that returns a default textual response
 app.get('/', (req, res) => {
-  res.send ('Welcome to my API! Please Go to /documentation.html to view the documentation.'),
- });
-
+  res.send(
+    'Welcome to my API! Please Go to /documentation.html to view the documentation.'
+  );
+});
 
 // Error-handling middleware
 app.use((err, req, res, next) => {
