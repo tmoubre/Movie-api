@@ -12,14 +12,31 @@ mongoose.connect (process.env.CONNECTION_URI,{ useNewUrlParser: true, useUnified
 app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
+// app.use(cors());
 let auth = require('./auth.js')(app);
 const passport = require('passport');
 require('./passport');
 const path = require("path");
+let allowedOrigins = [];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
+      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+      return callback(new Error(message ), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 //Add Users
 app.post('/users', 
+  // Validation logic here for request
+  //you can either use a chain of methods like .not().isEmpty()
+  //which means "opposite of isEmpty" in plain english "is not empty"
+  //or use .isLength({min: 5}) which means
+  //minimum value of 5 characters are only allowed
 [
   check('userId', 'User Id is required').isLength({ min: 5 }),
   check('userId', 'User Id contains non alpha numeric characters-not allowed') .isAlphanumeric(),
@@ -212,12 +229,12 @@ app.get('/director/:name', (req, res) => {
 app.get('/log', (req, res) => {
   res.send('This is a log.');
 });
+
 // GET route for "/" that returns a default textual response
 app.get('/', (req, res) => {
-  res.send(
-    'Welcome to my API! Please Go to /documentation.html to view the documentation.'
-  );
-});
+  res.send ('Welcome to my API! Please Go to /documentation.html to view the documentation.'),
+ });
+
 
 // Error-handling middleware
 app.use((err, req, res, next) => {
