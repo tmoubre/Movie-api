@@ -40,7 +40,7 @@ app.post('/users',
           Users
             .create({
               userId: req.body.userId,
-              password: req.body.password,
+              password: hashedPassword,
               email: req.body.email,
               birthDate: req.body.birthDate
             })
