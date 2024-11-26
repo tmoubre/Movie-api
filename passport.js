@@ -13,7 +13,7 @@ passport.use(
         passwordField: 'password',
     },
         async (userId, password, callback) => {
-            console.log(`${userId}${password}`);
+            console.log(`${userId} ${password}`);
             await Users.findOne({ userId: userId })
                 .then((user) => {
                     if (!user) {
