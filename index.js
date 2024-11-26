@@ -48,7 +48,7 @@ app.post('/users',
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-    let hashedPassword = userId.hashedPassword(req.body.Password);
+    let hashedPassword = Users.hashedPassword(req.body.Password);
     await Users.findOne({ userId: req.body.userId })
       .then((user) => {
         if (user) {
