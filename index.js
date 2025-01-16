@@ -8,10 +8,7 @@ const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
 const cors = require('cors');
-mongoose.connectmongoose.connect(
-  "mongodb+srv://myFlixDBAdmin:16345antietam@cluster0.efoid.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-  { useNewUrlParser: true, useUnifiedTopology: true }
-  );
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
