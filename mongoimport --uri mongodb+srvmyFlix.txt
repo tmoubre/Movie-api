@@ -1,1 +1,0 @@
-mongoimport --uri mongodb+srv://myFlixDBAdmin:16345%40ntietam@cluster0.efoid.mongodb.net/myFilxDB --collection movies --jsonArray --file C:\DB\movies.json

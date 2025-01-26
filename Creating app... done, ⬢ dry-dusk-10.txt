@@ -1,2 +1,0 @@
-Creating app... done, ⬢ dry-dusk-10142
-https://dry-dusk-10142-87f0ccb02f2a.herokuapp.com/ | https://git.heroku.com/dry-dusk-10142.git
