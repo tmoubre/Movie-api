@@ -15,7 +15,8 @@ const app = express();
 
 // CORS Configuration
 const allowedOrigins = ['https://sci-fi-movies.netlify.app'];
-// app.use(cors()){
+app.use(cors());
+//{
 //   origin: function (origin, callback) {
 //     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
 //       callback(null, true);
