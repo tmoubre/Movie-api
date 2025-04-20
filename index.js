@@ -17,7 +17,7 @@ let auth = require('./auth.js')(app);
 const passport = require('passport');
 require('./passport');
 const path = require("path");
-let allowedOrigins = ['https://sci-fi-movies.netlify.app/'];
+let allowedOrigins = ['https://sci-fi-movies.netlify.app'];
 
 
 app.use(cors({
