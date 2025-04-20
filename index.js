@@ -15,15 +15,15 @@ const app = express();
 
 // CORS Configuration
 const allowedOrigins = ['https://sci-fi-movies.netlify.app'];
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS policy does not allow access from this origin'), false);
-    }
-  }
-}));
+// app.use(cors()){
+//   origin: function (origin, callback) {
+//     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('CORS policy does not allow access from this origin'), false);
+//     }
+//   }
+// }));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
