@@ -14,7 +14,7 @@ mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnified
 const app = express();
 
 // CORS Configuration
-const allowedOrigins = ['https://sci-fi-movies.netlify.app'];
+//const allowedOrigins = ['https://sci-fi-movies.netlify.app'];
 app.use(cors());
 //{
 //   origin: function (origin, callback) {
