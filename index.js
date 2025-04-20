@@ -13,18 +13,24 @@ mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnified
 
 const app = express();
 
-// CORS Configuration
+// ✅ CORS Configuration
 const allowedOrigins = ['https://sci-fi-movies.netlify.app'];
-app.use(cors()){
+
+app.use(cors({
   origin: function (origin, callback) {
-    console.log('CORS request orgin:', origin);
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    console.log('CORS request origin:', origin);
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.error('Blocked by CORS policy:', origin);
       callback(new Error('CORS policy does not allow access from this origin'), false);
     }
-  }
+  },
+  optionsSuccessStatus: 200
 }));
+
+// ✅ Handle Preflight Requests
+app.options('*', cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -34,11 +40,13 @@ const passport = require('passport');
 require('./passport');
 const path = require("path");
 
-//Log to terminal with morgan
+// Log to terminal with morgan
 app.use(morgan('combined'));
 
-//serve files from public directory statically
+// Serve files from public directory statically
 app.use(express.static('public'));
+
+// === Your Routes ===
 
 // Add Users
 app.post('/users',
