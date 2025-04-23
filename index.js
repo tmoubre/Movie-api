@@ -94,16 +94,19 @@ app.put('/users/:userId', passport.authenticate('jwt', { session: false }), asyn
     return res.status(400).send('Permission denied');
   }
 
+  const updatedFields = {
+    userId: req.body.userId,
+    email: req.body.email,
+    birthDate: req.body.birthDate
+  };
+
+  if (req.body.password) {
+    updatedFields.password = Users.hashPassword(req.body.password); // 🔐 Hash the password
+  }
+
   await Users.findOneAndUpdate(
     { userId: req.params.userId },
-    {
-      $set: {
-        userId: req.body.userId,
-        password: req.body.password,
-        email: req.body.email,
-        birthDate: req.body.birthDate
-      }
-    },
+    { $set: updatedFields },
     { new: true }
   )
     .then((updatedUser) => res.json(updatedUser))
@@ -113,15 +116,6 @@ app.put('/users/:userId', passport.authenticate('jwt', { session: false }), asyn
     });
 });
 
-// Get all users
-app.get('/users', async (req, res) => {
-  await Users.find()
-    .then((users) => res.status(201).json(users))
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    });
-});
 
 // Get a user by username
 app.get('/users/:userId', async (req, res) => {
