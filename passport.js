@@ -1,3 +1,8 @@
+/**
+ * Passport Strategies
+ * Local and JWT strategies for authentication.
+ * @file
+ */
 const passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
     Models = require('./models.js'),
@@ -7,6 +12,9 @@ let Users = Models.User,
     JWTStrategy = passportJWT.Strategy,
     ExtractJWT = passportJWT.ExtractJwt;
 
+/**
+ * Configure LocalStrategy for username/password login.
+ */
 passport.use(
     new LocalStrategy({
         usernameField: 'userId',
@@ -37,6 +45,9 @@ passport.use(
         }
     )
 );
+/**
+ * Configure JWTStrategy to authenticate with Bearer token.
+ */
 passport.use(new JWTStrategy({
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
     secretOrKey: 'your_jwt_secret'
