@@ -9,7 +9,14 @@
  * - PORT           : Optional; defaults to 8080
  */
 
-require("dotenv").config();
+// Load .env only in local/dev; Heroku uses config vars, not .env files
+if (process.env.NODE_ENV !== "production") {
+  try {
+    require("dotenv").config();
+  } catch (_) {
+    // dotenv not installed in production – that's fine
+  }
+}
 
 const express = require("express");
 const morgan = require("morgan");
