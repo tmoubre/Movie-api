@@ -1,36 +1,53 @@
-//const jwtSecret = 'your_jwt_secret'; // This has to be the same key used in the JWTStrategy
-const jwtSecret = process.env.JWT_SECRET || "your_jwt_secret"; // prefer env, fallback for local only
+/**
+ * @file Authentication endpoints and JWT token generation.
+ * @module auth
+ */
+const jwt = require("jsonwebtoken");
+const passport = require("passport");
+const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret"; // dev fallback
+require("./passport");
 
-const jwt = require("jsonwebtoken"),
-  passport = require("passport");
-// const { Users } = require('./models');
+/**
+ * Generate a signed JWT for a user (minimal payload).
+ * @param {Object} user - Mongoose user doc or plain object.
+ * @returns {string} Signed JWT.
+ */
+function generateJWTToken(user) {
+  const u = user && user.toJSON ? user.toJSON() : user;
+  const payload = {
+    _id: u._id,
+    userId: u.userId || u.Username || u.username,
+    email: u.email || u.Email,
+  };
 
-require("./passport"); // Your local passport file
-
-let generateJWTToken = (user) => {
-  return jwt.sign(user, jwtSecret, {
-    subject: user.userId, // This is the username you’re encoding in the JWT
-    expiresIn: "7d", // This specifies that the token will expire in 7 days
-    algorithm: "HS256", // This is the algorithm used to “sign” or encode the values of the JWT
+  return jwt.sign(payload, JWT_SECRET, {
+    subject: String(payload.userId || payload._id || ""),
+    expiresIn: "7d",
+    algorithm: "HS256",
   });
-};
+}
 
-/*post login*/
+/**
+ * Registers the /login route using Passport Local strategy.
+ * Returns a JWT on success.
+ * @param {import('express').Application|import('express').Router} router
+ * @route POST /login
+ * @returns {{user: object, token: string}}
+ */
 module.exports = (router) => {
   router.post("/login", (req, res) => {
     passport.authenticate("local", { session: false }, (error, user, info) => {
-      if (error || !user) {
-        console.log("login failed ,{error, user, info}");
-        return res.status(400).json({
-          message: "Somthing is not right",
-          user: user,
-        });
-      }
-      req.login(user, { session: false }, (error) => {
-        if (error) {
-          res.send(error);
-        }
-        let token = generateJWTToken(user.toJSON());
+      if (error)
+        return res.status(500).json({ message: "Authentication error", error });
+      if (!user)
+        return res
+          .status(400)
+          .json({ message: (info && info.message) || "Invalid credentials" });
+
+      req.login(user, { session: false }, (err) => {
+        if (err)
+          return res.status(500).json({ message: "Login error", error: err });
+        const token = generateJWTToken(user);
         return res.json({ user, token });
       });
     })(req, res);
