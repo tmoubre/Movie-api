@@ -67,6 +67,7 @@ mongoose.connection.on("disconnected", () => {
 const allowedOrigins = new Set([
   "https://sci-fi-movies.netlify.app",
   "http://localhost:4200",
+  "https://angular-movieapp.netlify.app",
 ]);
 
 const corsOptions = {
